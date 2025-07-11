@@ -1,32 +1,51 @@
 body {
   font-family: sans-serif;
   text-align: center;
-  background-color: #0d1b2a;
-  color: white;
+  background-color: #121212;
+  color: #eee;
   padding: 2rem;
 }
 
-.panel {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 2rem;
+h1 {
+  margin-bottom: 1rem;
+}
+
+.synth-panel {
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  max-width: 800px;
+  padding: 2rem;
+  background: linear-gradient(to bottom right, #2a2a2a, #1a1a1a);
+  border-radius: 16px;
+  box-shadow: 0 0 20px #000;
 }
 
 .oscillator {
-  border: 2px solid #1b263b;
-  background-color: #1b263b;
-  padding: 1rem;
+  background: #2d2d2d;
+  border: 2px solid #555;
   border-radius: 12px;
-  width: 280px;
+  padding: 1rem;
+  box-shadow: inset 0 0 10px #000;
 }
 
-h2, h3 {
-  margin-top: 0;
-}
-
-label, select, input {
+label, select, input, button {
   display: block;
-  margin: 0.5rem auto;
+  margin: 0.4rem auto;
   width: 90%;
+}
+
+button.power {
+  background-color: #900;
+  color: white;
+  border: none;
+  padding: 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button.power.on {
+  background-color: #0c0;
 }

@@ -3,17 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Modular Tone Mixer</title>
+  <title>Modular Synth Panel</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Modular Tone Mixer</h1>
+  <h1>Modular Synth Panel</h1>
 
-  <div class="panel">
-    <h2>Frequency Generators</h2>
-
+  <div class="synth-panel">
     <div class="oscillator" id="osc1">
       <h3>Oscillator 1</h3>
+      <button class="power">Power</button>
       <label>Waveform:
         <select class="waveform">
           <option value="sine">Sine</option>
@@ -30,6 +29,7 @@
 
     <div class="oscillator" id="osc2">
       <h3>Oscillator 2</h3>
+      <button class="power">Power</button>
       <label>Waveform:
         <select class="waveform">
           <option value="sine">Sine</option>
@@ -46,6 +46,7 @@
 
     <div class="oscillator" id="osc3">
       <h3>Oscillator 3</h3>
+      <button class="power">Power</button>
       <label>Waveform:
         <select class="waveform">
           <option value="sine">Sine</option>
@@ -62,6 +63,7 @@
 
     <div class="oscillator" id="osc4">
       <h3>Oscillator 4</h3>
+      <button class="power">Power</button>
       <label>Waveform:
         <select class="waveform">
           <option value="sine">Sine</option>
@@ -76,8 +78,6 @@
       <input type="range" class="volume" min="0" max="1" value="0.5" step="0.01">
     </div>
   </div>
-
-  <button id="toggle">Play / Stop</button>
 
   <script src="script.js"></script>
 </body>
