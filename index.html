@@ -3,27 +3,81 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Web Audio Signal Generator</title>
+  <title>Modular Tone Mixer</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Signal Generator</h1>
+  <h1>Modular Tone Mixer</h1>
 
-  <label for="waveform">Waveform:</label>
-  <select id="waveform">
-    <option value="sine">Sine</option>
-    <option value="square">Square</option>
-    <option value="sawtooth">Sawtooth</option>
-    <option value="triangle">Triangle</option>
-  </select>
+  <div class="panel">
+    <h2>Frequency Generators</h2>
 
-  <label for="frequency">Frequency (Hz): <span id="freqValue">440</span></label>
-  <input type="range" id="frequency" min="20" max="2000" value="440" step="1">
+    <div class="oscillator" id="osc1">
+      <h3>Oscillator 1</h3>
+      <label>Waveform:
+        <select class="waveform">
+          <option value="sine">Sine</option>
+          <option value="square">Square</option>
+          <option value="sawtooth">Sawtooth</option>
+          <option value="triangle">Triangle</option>
+        </select>
+      </label>
+      <label>Frequency: <span class="freqValue">440</span> Hz</label>
+      <input type="range" class="frequency" min="20" max="2000" value="440">
+      <label>Volume: <span class="volValue">0.5</span></label>
+      <input type="range" class="volume" min="0" max="1" value="0.5" step="0.01">
+    </div>
 
-  <label for="volume">Volume: <span id="volValue">0.5</span></label>
-  <input type="range" id="volume" min="0" max="1" value="0.5" step="0.01">
+    <div class="oscillator" id="osc2">
+      <h3>Oscillator 2</h3>
+      <label>Waveform:
+        <select class="waveform">
+          <option value="sine">Sine</option>
+          <option value="square">Square</option>
+          <option value="sawtooth">Sawtooth</option>
+          <option value="triangle">Triangle</option>
+        </select>
+      </label>
+      <label>Frequency: <span class="freqValue">220</span> Hz</label>
+      <input type="range" class="frequency" min="20" max="2000" value="220">
+      <label>Volume: <span class="volValue">0.5</span></label>
+      <input type="range" class="volume" min="0" max="1" value="0.5" step="0.01">
+    </div>
 
-  <button id="toggle">Play</button>
+    <div class="oscillator" id="osc3">
+      <h3>Oscillator 3</h3>
+      <label>Waveform:
+        <select class="waveform">
+          <option value="sine">Sine</option>
+          <option value="square">Square</option>
+          <option value="sawtooth">Sawtooth</option>
+          <option value="triangle">Triangle</option>
+        </select>
+      </label>
+      <label>Frequency: <span class="freqValue">330</span> Hz</label>
+      <input type="range" class="frequency" min="20" max="2000" value="330">
+      <label>Volume: <span class="volValue">0.5</span></label>
+      <input type="range" class="volume" min="0" max="1" value="0.5" step="0.01">
+    </div>
+
+    <div class="oscillator" id="osc4">
+      <h3>Oscillator 4</h3>
+      <label>Waveform:
+        <select class="waveform">
+          <option value="sine">Sine</option>
+          <option value="square">Square</option>
+          <option value="sawtooth">Sawtooth</option>
+          <option value="triangle">Triangle</option>
+        </select>
+      </label>
+      <label>Frequency: <span class="freqValue">550</span> Hz</label>
+      <input type="range" class="frequency" min="20" max="2000" value="550">
+      <label>Volume: <span class="volValue">0.5</span></label>
+      <input type="range" class="volume" min="0" max="1" value="0.5" step="0.01">
+    </div>
+  </div>
+
+  <button id="toggle">Play / Stop</button>
 
   <script src="script.js"></script>
 </body>

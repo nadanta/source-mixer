@@ -1,20 +1,32 @@
 body {
   font-family: sans-serif;
   text-align: center;
-  padding: 2rem;
   background-color: #0d1b2a;
   color: white;
+  padding: 2rem;
+}
+
+.panel {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.oscillator {
+  border: 2px solid #1b263b;
+  background-color: #1b263b;
+  padding: 1rem;
+  border-radius: 12px;
+  width: 280px;
+}
+
+h2, h3 {
+  margin-top: 0;
 }
 
 label, select, input {
   display: block;
-  margin: 1rem auto;
-  width: 80%;
-  max-width: 300px;
-}
-
-button {
-  padding: 1rem 2rem;
-  font-size: 1.2rem;
-  margin-top: 1rem;
+  margin: 0.5rem auto;
+  width: 90%;
 }

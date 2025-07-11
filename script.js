@@ -1,54 +1,70 @@
 let audioCtx;
-let oscillator;
-let gainNode;
 let isPlaying = false;
+let oscillators = [];
 
 const toggleBtn = document.getElementById("toggle");
-const waveformSelect = document.getElementById("waveform");
-const frequencySlider = document.getElementById("frequency");
-const volumeSlider = document.getElementById("volume");
-const freqValue = document.getElementById("freqValue");
-const volValue = document.getElementById("volValue");
 
 toggleBtn.addEventListener("click", () => {
   if (!isPlaying) {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    oscillator = audioCtx.createOscillator();
-    gainNode = audioCtx.createGain();
+    oscillators = [];
 
-    oscillator.type = waveformSelect.value;
-    oscillator.frequency.setValueAtTime(frequencySlider.value, audioCtx.currentTime);
-    gainNode.gain.setValueAtTime(volumeSlider.value, audioCtx.currentTime);
+    document.querySelectorAll(".oscillator").forEach(panel => {
+      const waveform = panel.querySelector(".waveform").value;
+      const frequency = panel.querySelector(".frequency").value;
+      const volume = panel.querySelector(".volume").value;
 
-    oscillator.connect(gainNode);
-    gainNode.connect(audioCtx.destination);
-    oscillator.start();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
 
-    toggleBtn.textContent = "Stop";
+      osc.type = waveform;
+      osc.frequency.setValueAtTime(frequency, audioCtx.currentTime);
+      gain.gain.setValueAtTime(volume, audioCtx.currentTime);
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+
+      oscillators.push({ osc, gain, panel });
+    });
+
     isPlaying = true;
+    toggleBtn.textContent = "Stop";
   } else {
-    oscillator.stop();
-    toggleBtn.textContent = "Play";
+    oscillators.forEach(({ osc }) => osc.stop());
     isPlaying = false;
+    toggleBtn.textContent = "Play / Stop";
   }
 });
 
-waveformSelect.addEventListener("change", () => {
-  if (oscillator && isPlaying) {
-    oscillator.type = waveformSelect.value;
-  }
-});
+document.querySelectorAll(".oscillator").forEach(panel => {
+  const freqSlider = panel.querySelector(".frequency");
+  const volSlider = panel.querySelector(".volume");
+  const waveformSelect = panel.querySelector(".waveform");
 
-frequencySlider.addEventListener("input", () => {
-  freqValue.textContent = frequencySlider.value;
-  if (oscillator && isPlaying) {
-    oscillator.frequency.setValueAtTime(frequencySlider.value, audioCtx.currentTime);
-  }
-});
+  const freqValue = panel.querySelector(".freqValue");
+  const volValue = panel.querySelector(".volValue");
 
-volumeSlider.addEventListener("input", () => {
-  volValue.textContent = volumeSlider.value;
-  if (gainNode && isPlaying) {
-    gainNode.gain.setValueAtTime(volumeSlider.value, audioCtx.currentTime);
-  }
+  freqSlider.addEventListener("input", () => {
+    freqValue.textContent = freqSlider.value;
+    const o = oscillators.find(o => o.panel === panel);
+    if (o && isPlaying) {
+      o.osc.frequency.setValueAtTime(freqSlider.value, audioCtx.currentTime);
+    }
+  });
+
+  volSlider.addEventListener("input", () => {
+    volValue.textContent = volSlider.value;
+    const o = oscillators.find(o => o.panel === panel);
+    if (o && isPlaying) {
+      o.gain.gain.setValueAtTime(volSlider.value, audioCtx.currentTime);
+    }
+  });
+
+  waveformSelect.addEventListener("change", () => {
+    const o = oscillators.find(o => o.panel === panel);
+    if (o && isPlaying) {
+      o.osc.type = waveformSelect.value;
+    }
+  });
 });
