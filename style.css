@@ -2,10 +2,8 @@ body {
   font-family: sans-serif;
   text-align: center;
   padding: 2rem;
-  background-color: #0d1b2a; /* deep blue background */
-  color: white; /* optional: make text readable */
-}
-
+  background-color: #0d1b2a;
+  color: white;
 }
 
 label, select, input {
