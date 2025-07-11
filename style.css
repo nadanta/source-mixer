@@ -1,3 +1,4 @@
+
 body {
   font-family: sans-serif;
   text-align: center;
@@ -30,22 +31,77 @@ h1 {
   box-shadow: inset 0 0 10px #000;
 }
 
-label, select, input, button {
+.power {
+  width: 30px;
+  height: 30px;
+  background-color: #911;
+  border-radius: 50%;
+  border: 2px solid #400;
+  margin: 0.5rem auto;
   display: block;
-  margin: 0.4rem auto;
-  width: 90%;
+  box-shadow: inset -2px -2px 5px #000, inset 2px 2px 5px #600;
+  cursor: pointer;
 }
 
-button.power {
-  background-color: #900;
+.power.on {
+  background-color: #0c0;
+  box-shadow: inset -2px -2px 5px #030, inset 2px 2px 5px #6f6;
+}
+
+.waveform-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 0.3rem;
+  margin: 0.5rem 0;
+}
+
+.wave-btn {
+  background-color: #444;
   color: white;
-  border: none;
-  padding: 0.5rem;
+  border: 2px solid #222;
   border-radius: 6px;
+  padding: 0.3rem 0.5rem;
+  font-size: 1rem;
   cursor: pointer;
   transition: 0.2s;
+  box-shadow: inset -2px -2px 4px #000, inset 2px 2px 4px #666;
 }
 
-button.power.on {
+.wave-btn.active {
   background-color: #0c0;
+  color: black;
+  font-weight: bold;
+}
+
+.rotaries {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 0.8rem;
+}
+
+.dial {
+  text-align: center;
+}
+
+input[type=range].rotary {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, #666, #333);
+  box-shadow: inset -2px -2px 5px #000, inset 2px 2px 5px #555;
+  transform: rotate(-90deg);
+  margin-bottom: 0.5rem;
+}
+
+input[type=range].rotary::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  background: #eee;
+  width: 8px;
+  height: 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 0 0 5px #000;
 }

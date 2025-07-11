@@ -10,73 +10,108 @@
   <h1>Modular Synth Panel</h1>
 
   <div class="synth-panel">
-    <div class="oscillator" id="osc1">
-      <h3>Oscillator 1</h3>
-      <button class="power">Power</button>
-      <label>Waveform:
-        <select class="waveform">
-          <option value="sine">Sine</option>
-          <option value="square">Square</option>
-          <option value="sawtooth">Sawtooth</option>
-          <option value="triangle">Triangle</option>
-        </select>
-      </label>
-      <label>Frequency: <span class="freqValue">440</span> Hz</label>
-      <input type="range" class="frequency" min="20" max="2000" value="440">
-      <label>Volume: <span class="volValue">0.5</span></label>
-      <input type="range" class="volume" min="0" max="1" value="0.5" step="0.01">
-    </div>
+    <!-- Oscillators -->
+    
+<div class="oscillator" id="osc1">
+  <h3>Oscillator 1</h3>
+  <button class="power" title="Power"></button>
 
-    <div class="oscillator" id="osc2">
-      <h3>Oscillator 2</h3>
-      <button class="power">Power</button>
-      <label>Waveform:
-        <select class="waveform">
-          <option value="sine">Sine</option>
-          <option value="square">Square</option>
-          <option value="sawtooth">Sawtooth</option>
-          <option value="triangle">Triangle</option>
-        </select>
-      </label>
-      <label>Frequency: <span class="freqValue">220</span> Hz</label>
-      <input type="range" class="frequency" min="20" max="2000" value="220">
-      <label>Volume: <span class="volValue">0.5</span></label>
-      <input type="range" class="volume" min="0" max="1" value="0.5" step="0.01">
-    </div>
+  <div class="waveform-buttons">
+    <button class="wave-btn" data-wave="sine" title="Sine">🌊</button>
+    <button class="wave-btn" data-wave="square" title="Square">◼️</button>
+    <button class="wave-btn" data-wave="sawtooth" title="Saw">🪚</button>
+    <button class="wave-btn" data-wave="triangle" title="Triangle">🔺</button>
+  </div>
 
-    <div class="oscillator" id="osc3">
-      <h3>Oscillator 3</h3>
-      <button class="power">Power</button>
-      <label>Waveform:
-        <select class="waveform">
-          <option value="sine">Sine</option>
-          <option value="square">Square</option>
-          <option value="sawtooth">Sawtooth</option>
-          <option value="triangle">Triangle</option>
-        </select>
-      </label>
-      <label>Frequency: <span class="freqValue">330</span> Hz</label>
-      <input type="range" class="frequency" min="20" max="2000" value="330">
-      <label>Volume: <span class="volValue">0.5</span></label>
-      <input type="range" class="volume" min="0" max="1" value="0.5" step="0.01">
+  <div class="rotaries">
+    <div class="dial">
+      <label>Freq</label>
+      <input type="range" class="frequency rotary" min="20" max="2000" value="440">
+      <span class="freqValue">440</span> Hz
     </div>
+    <div class="dial">
+      <label>Gain</label>
+      <input type="range" class="volume rotary" min="0" max="1" value="0.5" step="0.01">
+      <span class="volValue">0.5</span>
+    </div>
+  </div>
+</div>
 
-    <div class="oscillator" id="osc4">
-      <h3>Oscillator 4</h3>
-      <button class="power">Power</button>
-      <label>Waveform:
-        <select class="waveform">
-          <option value="sine">Sine</option>
-          <option value="square">Square</option>
-          <option value="sawtooth">Sawtooth</option>
-          <option value="triangle">Triangle</option>
-        </select>
-      </label>
-      <label>Frequency: <span class="freqValue">550</span> Hz</label>
-      <input type="range" class="frequency" min="20" max="2000" value="550">
-      <label>Volume: <span class="volValue">0.5</span></label>
-      <input type="range" class="volume" min="0" max="1" value="0.5" step="0.01">
+<div class="oscillator" id="osc2">
+  <h3>Oscillator 2</h3>
+  <button class="power" title="Power"></button>
+
+  <div class="waveform-buttons">
+    <button class="wave-btn" data-wave="sine" title="Sine">🌊</button>
+    <button class="wave-btn" data-wave="square" title="Square">◼️</button>
+    <button class="wave-btn" data-wave="sawtooth" title="Saw">🪚</button>
+    <button class="wave-btn" data-wave="triangle" title="Triangle">🔺</button>
+  </div>
+
+  <div class="rotaries">
+    <div class="dial">
+      <label>Freq</label>
+      <input type="range" class="frequency rotary" min="20" max="2000" value="220">
+      <span class="freqValue">220</span> Hz
     </div>
+    <div class="dial">
+      <label>Gain</label>
+      <input type="range" class="volume rotary" min="0" max="1" value="0.5" step="0.01">
+      <span class="volValue">0.5</span>
+    </div>
+  </div>
+</div>
+
+<div class="oscillator" id="osc3">
+  <h3>Oscillator 3</h3>
+  <button class="power" title="Power"></button>
+
+  <div class="waveform-buttons">
+    <button class="wave-btn" data-wave="sine" title="Sine">🌊</button>
+    <button class="wave-btn" data-wave="square" title="Square">◼️</button>
+    <button class="wave-btn" data-wave="sawtooth" title="Saw">🪚</button>
+    <button class="wave-btn" data-wave="triangle" title="Triangle">🔺</button>
+  </div>
+
+  <div class="rotaries">
+    <div class="dial">
+      <label>Freq</label>
+      <input type="range" class="frequency rotary" min="20" max="2000" value="330">
+      <span class="freqValue">330</span> Hz
+    </div>
+    <div class="dial">
+      <label>Gain</label>
+      <input type="range" class="volume rotary" min="0" max="1" value="0.5" step="0.01">
+      <span class="volValue">0.5</span>
+    </div>
+  </div>
+</div>
+
+<div class="oscillator" id="osc4">
+  <h3>Oscillator 4</h3>
+  <button class="power" title="Power"></button>
+
+  <div class="waveform-buttons">
+    <button class="wave-btn" data-wave="sine" title="Sine">🌊</button>
+    <button class="wave-btn" data-wave="square" title="Square">◼️</button>
+    <button class="wave-btn" data-wave="sawtooth" title="Saw">🪚</button>
+    <button class="wave-btn" data-wave="triangle" title="Triangle">🔺</button>
+  </div>
+
+  <div class="rotaries">
+    <div class="dial">
+      <label>Freq</label>
+      <input type="range" class="frequency rotary" min="20" max="2000" value="550">
+      <span class="freqValue">550</span> Hz
+    </div>
+    <div class="dial">
+      <label>Gain</label>
+      <input type="range" class="volume rotary" min="0" max="1" value="0.5" step="0.01">
+      <span class="volValue">0.5</span>
+    </div>
+  </div>
+</div>
+
   </div>
 
   <script src="script.js"></script>

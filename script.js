@@ -1,37 +1,46 @@
+
 let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-let oscData = [];
 
 document.querySelectorAll(".oscillator").forEach(panel => {
-  const waveform = panel.querySelector(".waveform");
-  const frequency = panel.querySelector(".frequency");
-  const volume = panel.querySelector(".volume");
+  const freqSlider = panel.querySelector(".frequency");
+  const volSlider = panel.querySelector(".volume");
   const freqValue = panel.querySelector(".freqValue");
   const volValue = panel.querySelector(".volValue");
+  const waveformBtns = panel.querySelectorAll(".wave-btn");
   const powerBtn = panel.querySelector(".power");
 
-  let osc, gain;
+  let osc = null;
+  let gain = null;
+  let waveform = "sine";
 
-  function updateSound() {
-    freqValue.textContent = frequency.value;
-    volValue.textContent = volume.value;
+  waveformBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      waveformBtns.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      waveform = btn.dataset.wave;
+      if (osc) osc.type = waveform;
+    });
+  });
+
+  const updateValues = () => {
+    freqValue.textContent = freqSlider.value;
+    volValue.textContent = volSlider.value;
     if (osc) {
-      osc.frequency.setValueAtTime(frequency.value, audioCtx.currentTime);
-      osc.type = waveform.value;
-      gain.gain.setValueAtTime(volume.value, audioCtx.currentTime);
+      osc.frequency.setValueAtTime(freqSlider.value, audioCtx.currentTime);
+      gain.gain.setValueAtTime(volSlider.value, audioCtx.currentTime);
     }
-  }
+  };
 
-  frequency.addEventListener("input", updateSound);
-  volume.addEventListener("input", updateSound);
-  waveform.addEventListener("change", updateSound);
+  freqSlider.addEventListener("input", updateValues);
+  volSlider.addEventListener("input", updateValues);
 
   powerBtn.addEventListener("click", () => {
     if (!osc) {
       osc = audioCtx.createOscillator();
       gain = audioCtx.createGain();
-      osc.type = waveform.value;
-      osc.frequency.setValueAtTime(frequency.value, audioCtx.currentTime);
-      gain.gain.setValueAtTime(volume.value, audioCtx.currentTime);
+      osc.type = waveform;
+      osc.frequency.setValueAtTime(freqSlider.value, audioCtx.currentTime);
+      gain.gain.setValueAtTime(volSlider.value, audioCtx.currentTime);
       osc.connect(gain);
       gain.connect(audioCtx.destination);
       osc.start();
