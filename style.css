@@ -105,3 +105,39 @@ input[type=range].rotary::-webkit-slider-thumb {
   cursor: pointer;
   box-shadow: 0 0 5px #000;
 }
+
+input[type=range].rotary {
+  appearance: none;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, #666, #333);
+  box-shadow: inset -2px -2px 5px #000, inset 2px 2px 5px #555;
+  transform: rotate(0deg);
+  margin-bottom: 0.5rem;
+  position: relative;
+  --rotation: 0deg;
+}
+
+input[type=range].rotary::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 28px;
+  width: 4px;
+  height: 20px;
+  background: #eee;
+  transform: rotate(var(--rotation));
+  transform-origin: bottom center;
+  transition: transform 0.1s linear;
+  z-index: 2;
+}
+
+input[type=range].rotary::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  width: 60px;
+  height: 60px;
+  cursor: pointer;
+}
