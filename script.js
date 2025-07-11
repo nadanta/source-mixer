@@ -25,8 +25,6 @@ document.querySelectorAll(".oscillator").forEach(panel => {
   const updateValues = () => {
     freqValue.textContent = freqSlider.value;
     volValue.textContent = volSlider.value;
-    freqSlider.style.setProperty('--rotation', (freqSlider.value / 2000 * 270 - 135) + 'deg');
-    volSlider.style.setProperty('--rotation', (volSlider.value * 270 - 135) + 'deg');
     if (osc) {
       osc.frequency.setValueAtTime(freqSlider.value, audioCtx.currentTime);
       gain.gain.setValueAtTime(volSlider.value, audioCtx.currentTime);
@@ -48,7 +46,6 @@ document.querySelectorAll(".oscillator").forEach(panel => {
       osc.start();
       powerBtn.classList.add("on");
 
-      // Set sine wave button active on power on
       waveformBtns.forEach(b => {
         if (b.dataset.wave === "sine") {
           b.classList.add("active");
@@ -57,7 +54,6 @@ document.querySelectorAll(".oscillator").forEach(panel => {
           b.classList.remove("active");
         }
       });
-
     } else {
       osc.stop();
       osc.disconnect();
@@ -68,6 +64,5 @@ document.querySelectorAll(".oscillator").forEach(panel => {
     }
   });
 
-  // Initialize dial rotation
   updateValues();
 });
