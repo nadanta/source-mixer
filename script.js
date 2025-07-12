@@ -1,79 +1,99 @@
 
-let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+const panel = document.getElementById('oscillator-panel');
+let activeFocus = null;
 
-document.querySelectorAll(".oscillator").forEach(panel => {
-  const freqSlider = panel.querySelector(".frequency");
-  const volSlider = panel.querySelector(".volume");
-  const freqValue = panel.querySelector(".freqValue");
-  const volValue = panel.querySelector(".volValue");
-  const waveformBtns = panel.querySelectorAll(".wave-btn");
-  const powerBtn = panel.querySelector(".power");
-  const focusBtn = panel.querySelector(".focus-btn");
+function createOscillator(id) {
+  const container = document.createElement('div');
+  container.className = 'oscillator';
+  container.id = 'osc-' + id;
 
-  let osc = null;
-  let gain = null;
-  let waveform = "sine";
+  const power = document.createElement('button');
+  power.textContent = '●';
+  power.title = 'Power';
+  let ctx = null, osc = null, gainNode = null;
 
-  waveformBtns.forEach(btn => {
-    btn.addEventListener("click", () => {
-      waveformBtns.forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      waveform = btn.dataset.wave;
-      if (osc) osc.type = waveform;
-    });
-  });
-
-  const updateValues = () => {
-    freqValue.textContent = freqSlider.value;
-    volValue.textContent = volSlider.value;
-    if (osc) {
-      osc.frequency.setValueAtTime(freqSlider.value, audioCtx.currentTime);
-      gain.gain.setValueAtTime(volSlider.value, audioCtx.currentTime);
+  power.onclick = () => {
+    if (!ctx) {
+      ctx = new AudioContext();
+      osc = ctx.createOscillator();
+      gainNode = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = 440;
+      gainNode.gain.value = 0.5;
+      osc.connect(gainNode).connect(ctx.destination);
+      osc.start();
+      power.style.color = '#0f0';
+    } else {
+      osc.stop();
+      ctx.close();
+      ctx = null;
+      power.style.color = '';
     }
   };
 
-  freqSlider.addEventListener("input", updateValues);
-  volSlider.addEventListener("input", updateValues);
+  const waveContainer = document.createElement('div');
+  ['sine','square','sawtooth','triangle'].forEach(type => {
+    const btn = document.createElement('button');
+    btn.textContent = type[0].toUpperCase();
+    btn.className = 'wave-btn';
+    btn.onclick = () => {
+      if (osc) osc.type = type;
+    };
+    waveContainer.appendChild(btn);
+  });
 
-  powerBtn.addEventListener("click", () => {
-    if (!osc) {
-      osc = audioCtx.createOscillator();
-      gain = audioCtx.createGain();
-      osc.type = waveform;
-      osc.frequency.setValueAtTime(freqSlider.value, audioCtx.currentTime);
-      gain.gain.setValueAtTime(volSlider.value, audioCtx.currentTime);
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start();
-      powerBtn.classList.add("on");
-      waveformBtns.forEach(b => {
-        if (b.dataset.wave === "sine") {
-          b.classList.add("active");
-        }
-      });
+  const freqLabel = document.createElement('div');
+  freqLabel.className = 'label';
+  freqLabel.textContent = 'Freq: 440Hz';
+  const freqSlider = document.createElement('input');
+  freqSlider.type = 'range';
+  freqSlider.min = 40;
+  freqSlider.max = 2000;
+  freqSlider.value = 440;
+  freqSlider.className = 'slider';
+  freqSlider.oninput = () => {
+    freqLabel.textContent = 'Freq: ' + freqSlider.value + 'Hz';
+    if (osc) osc.frequency.value = freqSlider.value;
+  };
+
+  const gainLabel = document.createElement('div');
+  gainLabel.className = 'label';
+  gainLabel.textContent = 'Gain: 0.5';
+  const gainSlider = document.createElement('input');
+  gainSlider.type = 'range';
+  gainSlider.min = 0;
+  gainSlider.max = 1;
+  gainSlider.step = 0.01;
+  gainSlider.value = 0.5;
+  gainSlider.className = 'slider';
+  gainSlider.oninput = () => {
+    gainLabel.textContent = 'Gain: ' + gainSlider.value;
+    if (gainNode) gainNode.gain.value = gainSlider.value;
+  };
+
+  const focus = document.createElement('button');
+  focus.textContent = '🔍';
+  focus.title = 'Focus';
+  focus.onclick = () => {
+    document.querySelectorAll('.oscillator').forEach(el => el.classList.remove('focused'));
+    if (activeFocus !== container) {
+      container.classList.add('focused');
+      activeFocus = container;
     } else {
-      osc.stop();
-      osc.disconnect();
-      gain.disconnect();
-      osc = null;
-      gain = null;
-      powerBtn.classList.remove("on");
+      activeFocus = null;
     }
-  });
+  };
 
-  focusBtn.addEventListener("click", () => {
-    document.querySelectorAll(".oscillator").forEach(o => o.classList.remove("focused"));
-    panel.classList.add("focused");
-    document.body.classList.add("focus-mode");
-  });
+  container.appendChild(power);
+  container.appendChild(focus);
+  container.appendChild(waveContainer);
+  container.appendChild(freqLabel);
+  container.appendChild(freqSlider);
+  container.appendChild(gainLabel);
+  container.appendChild(gainSlider);
+  panel.appendChild(container);
+}
 
-  updateValues();
-});
-
-document.body.addEventListener("click", e => {
-  if (e.target.classList.contains("focus-btn")) return;
-  if (document.body.classList.contains("focus-mode")) {
-    document.querySelectorAll(".oscillator").forEach(o => o.classList.remove("focused"));
-    document.body.classList.remove("focus-mode");
-  }
-});
+for (let i = 0; i < 4; i++) {
+  createOscillator(i);
+}
