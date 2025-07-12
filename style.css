@@ -1,84 +1,69 @@
-
 body {
-  margin: 0;
-  font-family: 'Courier New', Courier, monospace;
   background-color: #111;
-  color: #eee;
+  color: white;
+  font-family: 'Courier New', Courier, monospace;
+  margin: 0;
+  padding: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
+  box-sizing: border-box;
 }
 
-.panel-wrapper {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  width: 100%;
-  max-width: 1000px;
-  gap: 1rem;
-  padding: 1rem;
-}
-
-.panel {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 1rem;
+.main-panel {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  width: 90vw;
+  max-width: 800px;
+  height: auto;
+  justify-items: center;
+  align-items: center;
 }
 
 .oscillator {
   background: #222;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px #000;
-  padding: 1rem;
-  width: 200px;
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 0 10px #000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 300px;
   transition: transform 0.3s ease;
-  position: relative;
 }
 
 .oscillator.focused {
   transform: scale(2);
   z-index: 10;
+  position: relative;
 }
 
-button, .wave-btn {
-  margin: 0.2rem;
-  font-size: 1rem;
-  padding: 0.3rem 0.6rem;
-  border-radius: 4px;
-  background: #444;
-  color: #fff;
-  border: 1px solid #666;
-  cursor: pointer;
+button, input[type=range] {
+  margin: 6px;
+  padding: 6px;
+  background-color: #444;
+  color: white;
+  border: none;
+  border-radius: 5px;
   font-family: monospace;
-}
-
-button:hover {
-  background: #666;
-}
-
-.slider {
-  width: 100%;
-  margin-top: 0.3rem;
-  appearance: none;
-  height: 8px;
-  border-radius: 4px;
-  background: #444;
-  outline: none;
-}
-
-.slider::-webkit-slider-thumb {
-  appearance: none;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: white;
   cursor: pointer;
-  box-shadow: 0 0 3px #000;
+}
+
+button:focus {
+  outline: 2px solid #0ff;
+}
+
+.waveform-btns button {
+  font-size: 14px;
+  width: 30px;
+  height: 30px;
+  margin: 2px;
 }
 
 .label {
-  font-size: 0.9rem;
-  margin-top: 0.5rem;
+  font-size: 14px;
+  margin-top: 6px;
 }
