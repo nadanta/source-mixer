@@ -46,13 +46,9 @@ document.querySelectorAll(".oscillator").forEach(panel => {
       gain.connect(audioCtx.destination);
       osc.start();
       powerBtn.classList.add("on");
-
       waveformBtns.forEach(b => {
         if (b.dataset.wave === "sine") {
           b.classList.add("active");
-          waveform = "sine";
-        } else {
-          b.classList.remove("active");
         }
       });
     } else {
