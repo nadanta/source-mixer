@@ -8,6 +8,7 @@ document.querySelectorAll(".oscillator").forEach(panel => {
   const volValue = panel.querySelector(".volValue");
   const waveformBtns = panel.querySelectorAll(".wave-btn");
   const powerBtn = panel.querySelector(".power");
+  const focusBtn = panel.querySelector(".focus-btn");
 
   let osc = null;
   let gain = null;
@@ -64,5 +65,19 @@ document.querySelectorAll(".oscillator").forEach(panel => {
     }
   });
 
+  focusBtn.addEventListener("click", () => {
+    document.querySelectorAll(".oscillator").forEach(o => o.classList.remove("focused"));
+    panel.classList.add("focused");
+    document.body.classList.add("focus-mode");
+  });
+
   updateValues();
+});
+
+document.body.addEventListener("click", e => {
+  if (e.target.classList.contains("focus-btn")) return;
+  if (document.body.classList.contains("focus-mode")) {
+    document.querySelectorAll(".oscillator").forEach(o => o.classList.remove("focused"));
+    document.body.classList.remove("focus-mode");
+  }
 });

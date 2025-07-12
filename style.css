@@ -1,140 +1,132 @@
 
 body {
-  font-family: sans-serif;
-  text-align: center;
-  background-color: #121212;
-  color: #eee;
-  padding: 2rem;
+  background: #111;
+  color: #ccc;
+  font-family: 'Courier New', monospace;
+  margin: 0;
+  padding: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-h1 {
-  margin-bottom: 1rem;
-}
-
-.synth-panel {
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem;
-  max-width: 800px;
-  padding: 2rem;
-  background: linear-gradient(to bottom right, #2a2a2a, #1a1a1a);
-  border-radius: 16px;
-  box-shadow: 0 0 20px #000;
+.panel-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  max-width: 100%;
+  flex-direction: row;
 }
 
 .oscillator {
-  background: #2d2d2d;
-  border: 2px solid #555;
-  border-radius: 12px;
+  background: #222;
+  border: 2px solid #444;
+  border-radius: 8px;
   padding: 1rem;
-  box-shadow: inset 0 0 10px #000;
+  width: 200px;
+  box-shadow: 0 0 10px #000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 0.3s ease;
 }
 
 .power {
+  background: #111;
+  color: green;
+  border: 2px solid green;
+  border-radius: 50%;
   width: 30px;
   height: 30px;
-  background-color: #911;
-  border-radius: 50%;
-  border: 2px solid #400;
-  margin: 0.5rem auto;
-  display: block;
-  box-shadow: inset -2px -2px 5px #000, inset 2px 2px 5px #600;
-  cursor: pointer;
-}
-
-.power.on {
-  background-color: #0c0;
-  box-shadow: inset -2px -2px 5px #030, inset 2px 2px 5px #6f6;
-}
-
-.waveform-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 0.3rem;
-  margin: 0.5rem 0;
-}
-
-.wave-btn {
-  background-color: #444;
-  color: white;
-  border: 2px solid #222;
-  border-radius: 6px;
-  padding: 0.3rem 0.5rem;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: 0.2s;
-  box-shadow: inset -2px -2px 4px #000, inset 2px 2px 4px #666;
-}
-
-.wave-btn.active {
-  background-color: #0c0;
-  color: black;
-  font-weight: bold;
-}
-
-.rotaries {
-  display: flex;
-  justify-content: space-around;
-  margin-top: 0.8rem;
-}
-
-.dial {
-  text-align: center;
-}
-
-input[type=range].rotary {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background: radial-gradient(circle at center, #666, #333);
-  box-shadow: inset -2px -2px 5px #000, inset 2px 2px 5px #555;
-  transform: rotate(-90deg);
   margin-bottom: 0.5rem;
 }
 
-input[type=range].rotary::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  background: #eee;
-  width: 8px;
-  height: 20px;
-  border-radius: 4px;
-  cursor: pointer;
-  box-shadow: 0 0 5px #000;
+.power.on {
+  background: green;
+  color: #111;
 }
 
-input[type=range] {
+.focus-btn {
+  margin-bottom: 0.5rem;
+  background: #333;
+  color: #ccc;
+  border: 1px solid #777;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.waveform {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.wave-btn {
+  padding: 0.3rem 0.6rem;
+  border: 1px solid #555;
+  background: #333;
+  color: #ccc;
+  border-radius: 4px;
+  font-family: monospace;
+  cursor: pointer;
+}
+
+.wave-btn.active {
+  background: #888;
+  color: #111;
+}
+
+input[type=range].horizontal {
   appearance: none;
-  width: 8px;
-  height: 100px;
+  width: 100px;
+  height: 10px;
+  margin: 1rem 0;
   background: #222;
-  border-radius: 4px;
-  box-shadow: inset 0 0 4px #000;
-  margin: 0.5rem auto;
-  display: block;
+  border-radius: 5px;
+  box-shadow: inset 0 0 5px #000;
 }
 
-input[type=range]::-webkit-slider-thumb {
+input[type=range].horizontal::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
   width: 20px;
   height: 20px;
-  background: #ccc;
-  border: 2px solid #333;
-  border-radius: 4px;
-  box-shadow: 2px 2px 6px #000;
+  background: linear-gradient(145deg, #888, #444);
+  border: 2px solid #222;
+  border-radius: 3px;
   cursor: pointer;
+  box-shadow: 1px 1px 2px #000;
 }
 
-input[type=range]::-moz-range-thumb {
+input[type=range].horizontal::-moz-range-thumb {
   width: 20px;
   height: 20px;
-  background: #ccc;
-  border: 2px solid #333;
-  border-radius: 4px;
-  box-shadow: 2px 2px 6px #000;
+  background: linear-gradient(145deg, #888, #444);
+  border: 2px solid #222;
+  border-radius: 3px;
   cursor: pointer;
+  box-shadow: 1px 1px 2px #000;
+}
+
+@media (max-width: 768px) {
+  .panel-wrapper {
+    flex-direction: column;
+    align-items: center;
+  }
+  .oscillator {
+    width: 90%;
+  }
+}
+
+.focus-mode .oscillator {
+  display: none;
+}
+
+.focus-mode .oscillator.focused {
+  display: flex;
+  width: 90%;
+  max-width: 400px;
+  height: auto;
 }
