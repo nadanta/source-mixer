@@ -3,46 +3,55 @@ const context = new (window.AudioContext || window.webkitAudioContext)();
 
 function createOscillatorPanel(id) {
   const panel = document.getElementById(id);
-  let oscillator, gainNode;
+  let oscillator = null, gainNode = null;
   let isOn = false;
   let isFocused = false;
+  let currentWaveBtn = null;
 
   const onOffButton = document.createElement('button');
   onOffButton.textContent = '●';
+  onOffButton.classList.add('power-off');
   onOffButton.title = 'Power';
   onOffButton.onclick = () => {
     if (!isOn) {
       oscillator = context.createOscillator();
       gainNode = context.createGain();
       oscillator.type = 'sine';
-      oscillator.frequency.value = 440;
-      gainNode.gain.value = 0.5;
+      oscillator.frequency.value = freqSlider.value;
+      gainNode.gain.value = gainSlider.value;
       oscillator.connect(gainNode).connect(context.destination);
       oscillator.start();
       isOn = true;
+      onOffButton.classList.remove('power-off');
+      onOffButton.classList.add('power-on');
     } else {
-      oscillator.stop();
+      if (oscillator) oscillator.stop();
+      oscillator = null;
       isOn = false;
-    }
-  };
-
-  const focusButton = document.createElement('button');
-  focusButton.textContent = '⧉';
-  focusButton.title = 'Focus';
-  focusButton.onclick = () => {
-    isFocused = !isFocused;
-    document.querySelectorAll('.oscillator-panel').forEach(p => p.classList.remove('focused'));
-    if (isFocused) {
-      panel.classList.add('focused');
+      onOffButton.classList.remove('power-on');
+      onOffButton.classList.add('power-off');
+      if (currentWaveBtn) currentWaveBtn.classList.remove('wave-active');
     }
   };
 
   const waveformContainer = document.createElement('div');
-  ['sine', 'square', 'sawtooth', 'triangle'].forEach(type => {
+  waveformContainer.className = 'waveform-buttons';
+
+  const waveforms = [
+    { type: 'sine', symbol: '◉' },
+    { type: 'square', symbol: '▀' },
+    { type: 'sawtooth', symbol: '∿' },
+    { type: 'triangle', symbol: '▲' },
+  ];
+
+  waveforms.forEach(({ type, symbol }) => {
     const btn = document.createElement('button');
-    btn.textContent = type.charAt(0).toUpperCase();
+    btn.textContent = symbol;
     btn.onclick = () => {
       if (oscillator) oscillator.type = type;
+      if (currentWaveBtn) currentWaveBtn.classList.remove('wave-active');
+      btn.classList.add('wave-active');
+      currentWaveBtn = btn;
     };
     waveformContainer.appendChild(btn);
   });
@@ -72,13 +81,24 @@ function createOscillatorPanel(id) {
     if (gainNode) gainNode.gain.value = gainSlider.value;
   };
 
+  const focusButton = document.createElement('button');
+  focusButton.textContent = '⧉';
+  focusButton.title = 'Focus';
+  focusButton.onclick = () => {
+    isFocused = !isFocused;
+    document.querySelectorAll('.oscillator-panel').forEach(p => p.classList.remove('focused'));
+    if (isFocused) {
+      panel.classList.add('focused');
+    }
+  };
+
   panel.appendChild(onOffButton);
-  panel.appendChild(focusButton);
   panel.appendChild(waveformContainer);
   panel.appendChild(freqLabel);
   panel.appendChild(freqSlider);
   panel.appendChild(gainLabel);
   panel.appendChild(gainSlider);
+  panel.appendChild(focusButton);
 
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {

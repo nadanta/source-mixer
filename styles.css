@@ -27,6 +27,9 @@ body {
   color: white;
   text-align: center;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 button {
@@ -37,10 +40,21 @@ button {
   background: #444;
   color: white;
   cursor: pointer;
+  font-size: 18px;
 }
 
 button:active {
   background: #666;
+}
+
+button.power-on { background: green; }
+button.power-off { background: red; }
+button.wave-active { background: purple; }
+
+.waveform-buttons {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 10px;
 }
 
 input[type="range"] {
