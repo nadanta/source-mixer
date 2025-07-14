@@ -16,6 +16,11 @@ function createOscillatorPanel(id) {
   onOffButton.classList.add('power-off');
   onOffButton.title = 'Power';
   onOffButton.onclick = () => {
+    if (!isOn && currentWaveBtn == null) {
+      const sineBtn = waveformContainer.querySelector('button');
+      sineBtn.classList.add('wave-active');
+      currentWaveBtn = sineBtn;
+    }
     if (!isOn) {
       oscillator = context.createOscillator();
       gainNode = context.createGain();
@@ -75,12 +80,24 @@ function createOscillatorPanel(id) {
 
   const freqLabel = document.createElement('label');
   freqLabel.textContent = 'Freq: 440Hz';
+  const freqInput = document.createElement('input');
+  freqInput.type = 'number';
+  freqInput.min = 20;
+  freqInput.max = 20000;
+  freqInput.value = 440;
+  freqInput.style.width = '80px';
+  freqInput.oninput = () => {
+    freqSlider.value = freqInput.value;
+    freqLabel.textContent = 'Freq: ' + freqInput.value + 'Hz';
+    if (oscillator) oscillator.frequency.value = freqInput.value;
+  };
   const freqSlider = document.createElement('input');
   freqSlider.type = 'range';
   freqSlider.min = 20;
   freqSlider.max = 20000;
   freqSlider.value = 440;
   freqSlider.oninput = () => {
+    freqInput.value = freqSlider.value;
     freqLabel.textContent = 'Freq: ' + freqSlider.value + 'Hz';
     if (oscillator) oscillator.frequency.value = freqSlider.value;
   };
@@ -102,6 +119,7 @@ function createOscillatorPanel(id) {
   panel.appendChild(waveformContainer);
   panel.appendChild(freqLabel);
   panel.appendChild(freqSlider);
+  panel.appendChild(freqInput);
   panel.appendChild(gainLabel);
   panel.appendChild(gainSlider);
 
