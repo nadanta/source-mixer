@@ -1,37 +1,107 @@
 
 body {
   margin: 0;
-  padding: 0;
   font-family: monospace;
-  background: linear-gradient(to bottom, #333, #111);
-  color: #fff;
+  background: radial-gradient(#111, #000);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  flex-direction: column;
 }
 
-#main-panel {
+#osc-container {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  grid-gap: 10px;
-  padding: 10px;
-  max-width: 800px;
-  margin: auto;
+  grid-gap: 20px;
+  padding: 20px;
+  max-width: 1000px;
 }
 
-.osc-panel {
-  background: linear-gradient(145deg, #888, #555);
+.oscillator {
+  background: linear-gradient(to bottom, #555, #333);
   border-radius: 12px;
-  padding: 10px;
-  box-shadow: 0 0 5px rgba(0,0,0,0.4);
-  min-height: 180px;
+  padding: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  position: relative;
+  min-width: 300px;
 }
 
-@media (max-width: 500px) {
-  #main-panel {
+.controls {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.label {
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #ccc;
+  text-shadow: 1px 1px #000;
+}
+
+button {
+  background: #222;
+  border: 1px solid #555;
+  border-radius: 6px;
+  padding: 4px 10px;
+  cursor: pointer;
+  color: white;
+}
+
+button.active {
+  background: #2ecc71; /* green for power */
+}
+
+button.focused {
+  background: #3498db; /* blue for focus */
+}
+
+button.wave-active {
+  background: #c63ccf; /* pinky purple for waveform */
+}
+
+.freq-group {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+input[type=range] {
+  width: 100%;
+  margin: 6px 0;
+  appearance: none;
+  background: #333;
+  height: 6px;
+  border-radius: 4px;
+  outline: none;
+}
+
+input[type=range]::-webkit-slider-thumb {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: white;
+  border-radius: 50%;
+  border: 1px solid #000;
+}
+
+.freq-input {
+  width: 60px;
+  margin-left: 8px;
+  text-align: center;
+}
+
+.waveform-btns {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+@media (max-width: 768px) {
+  #osc-container {
     grid-template-columns: 1fr;
-  }
-}
-
-@media (min-width: 501px) and (max-width: 900px) {
-  #main-panel {
-    grid-template-columns: 1fr 1fr;
   }
 }
