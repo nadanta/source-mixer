@@ -55,9 +55,9 @@ function createOscillatorPanel(id) {
   waveformContainer.className = 'waveform-buttons';
 
   const waveforms = [
-    { type: 'sawtooth', symbol: '∿' },
+    { type: 'sine', symbol: '∿' },
     { type: 'square', symbol: '◻' },
-    { type: 'sine', symbol: 'w' },
+    { type: 'sawtooth', symbol: 'w' },
     { type: 'triangle', symbol: '▵' },
   ];
 
