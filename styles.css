@@ -80,3 +80,18 @@ label {
   left: 50%;
   transform: translate(-50%, -50%) scale(2);
 }
+
+
+.osc-label {
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  color: #ccc;
+  background: linear-gradient(to bottom, #222, #111);
+  border: 1px inset #444;
+  padding: 2px 8px;
+  margin: 6px auto 6px auto;
+  text-align: center;
+  width: 60%;
+  border-radius: 4px;
+  box-shadow: inset 1px 1px 2px #000;
+}

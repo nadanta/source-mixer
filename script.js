@@ -1,7 +1,7 @@
 
 const context = new (window.AudioContext || window.webkitAudioContext)();
 
-function createOscillatorPanel(id) {
+function createOscillatorPanel(id, label, minFreq, maxFreq) {
   const panel = document.getElementById(id);
   let oscillator = null, gainNode = null;
   let isOn = false;
@@ -96,11 +96,16 @@ function createOscillatorPanel(id) {
   freqSlider.min = 20;
   freqSlider.max = 20000;
   freqSlider.value = 440;
+  
   freqSlider.oninput = () => {
-    freqInput.value = freqSlider.value;
-    freqLabel.textContent = 'Freq: ' + freqSlider.value + 'Hz';
-    if (oscillator) oscillator.frequency.value = freqSlider.value;
+    const min = parseFloat(panel.dataset.minFreq);
+    const max = parseFloat(panel.dataset.maxFreq);
+    let val = parseFloat(freqSlider.value);
+    val = Math.max(min, Math.min(max, val));
+    freqText.textContent = val.toFixed(2);
+    if (oscillator) oscillator.frequency.value = val;
   };
+    
 
   const gainLabel = document.createElement('label');
   gainLabel.textContent = 'Gain: 0.5';
