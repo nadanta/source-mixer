@@ -40,6 +40,8 @@ function createOscillatorPanel(id) {
       onOffButton.classList.add('power-off');
       if (currentWaveBtn) currentWaveBtn.classList.remove('wave-active');
     }
+        e.preventDefault();
+    }
   };
 
   const focusButton = document.createElement('button');
@@ -81,7 +83,8 @@ function createOscillatorPanel(id) {
   const freqLabel = document.createElement('label');
   freqLabel.innerHTML = 'Freq: <span contenteditable="true" style="display:inline-block;width:60px;text-align:right;" id="freqText">440</span>Hz';
   const freqText = freqLabel.querySelector('#freqText');
-  freqText.onblur = () => {
+  freqText.onkeydown = (e) => {
+    if (e.key === 'Enter') {
     let val = parseFloat(freqText.textContent);
     if (isNaN(val) || val < 20) val = 20;
     if (val > 20000) val = 20000;
@@ -95,7 +98,7 @@ function createOscillatorPanel(id) {
   freqSlider.max = 20000;
   freqSlider.value = 440;
   freqSlider.oninput = () => {
-    freqLabel.querySelector('#freqText').textContent = freqSlider.value;
+    freqLabel.querySelector('#freqText').textContent = Math.round(freqSlider.value);
     freqInput.value = freqSlider.value;
     freqLabel.textContent = 'Freq: ' + freqSlider.value + 'Hz';
     if (oscillator) oscillator.frequency.value = freqSlider.value;
