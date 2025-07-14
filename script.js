@@ -79,17 +79,15 @@ function createOscillatorPanel(id) {
   });
 
   const freqLabel = document.createElement('label');
-  freqLabel.textContent = 'Freq: 440Hz';
-  const freqInput = document.createElement('input');
-  freqInput.type = 'number';
-  freqInput.min = 20;
-  freqInput.max = 20000;
-  freqInput.value = 440;
-  freqInput.style.width = '80px';
-  freqInput.oninput = () => {
-    freqSlider.value = freqInput.value;
-    freqLabel.textContent = 'Freq: ' + freqInput.value + 'Hz';
-    if (oscillator) oscillator.frequency.value = freqInput.value;
+  freqLabel.innerHTML = 'Freq: <span contenteditable="true" style="display:inline-block;width:60px;text-align:right;" id="freqText">440</span>Hz';
+  const freqText = freqLabel.querySelector('#freqText');
+  freqText.onblur = () => {
+    let val = parseFloat(freqText.textContent);
+    if (isNaN(val) || val < 20) val = 20;
+    if (val > 20000) val = 20000;
+    freqText.textContent = val;
+    freqSlider.value = val;
+    if (oscillator) oscillator.frequency.value = val;
   };
   const freqSlider = document.createElement('input');
   freqSlider.type = 'range';
@@ -97,6 +95,7 @@ function createOscillatorPanel(id) {
   freqSlider.max = 20000;
   freqSlider.value = 440;
   freqSlider.oninput = () => {
+    freqLabel.querySelector('#freqText').textContent = freqSlider.value;
     freqInput.value = freqSlider.value;
     freqLabel.textContent = 'Freq: ' + freqSlider.value + 'Hz';
     if (oscillator) oscillator.frequency.value = freqSlider.value;
@@ -119,7 +118,7 @@ function createOscillatorPanel(id) {
   panel.appendChild(waveformContainer);
   panel.appendChild(freqLabel);
   panel.appendChild(freqSlider);
-  panel.appendChild(freqInput);
+  panel.appendChild(freqLabel);
   panel.appendChild(gainLabel);
   panel.appendChild(gainSlider);
 
