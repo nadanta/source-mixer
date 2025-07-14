@@ -32,6 +32,12 @@ body {
   justify-content: space-between;
 }
 
+.panel-top {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
 button {
   margin: 5px;
   padding: 6px 10px;
@@ -49,7 +55,7 @@ button:active {
 
 button.power-on { background: green; }
 button.power-off { background: red; }
-button.wave-active { background: purple; }
+button.wave-active { background: #e066ff; }
 
 .waveform-buttons {
   display: flex;

@@ -8,6 +8,9 @@ function createOscillatorPanel(id) {
   let isFocused = false;
   let currentWaveBtn = null;
 
+  const topRow = document.createElement('div');
+  topRow.className = 'panel-top';
+
   const onOffButton = document.createElement('button');
   onOffButton.textContent = '●';
   onOffButton.classList.add('power-off');
@@ -34,14 +37,28 @@ function createOscillatorPanel(id) {
     }
   };
 
+  const focusButton = document.createElement('button');
+  focusButton.textContent = '⧉';
+  focusButton.title = 'Focus';
+  focusButton.onclick = () => {
+    isFocused = !isFocused;
+    document.querySelectorAll('.oscillator-panel').forEach(p => p.classList.remove('focused'));
+    if (isFocused) {
+      panel.classList.add('focused');
+    }
+  };
+
+  topRow.appendChild(onOffButton);
+  topRow.appendChild(focusButton);
+
   const waveformContainer = document.createElement('div');
   waveformContainer.className = 'waveform-buttons';
 
   const waveforms = [
-    { type: 'sine', symbol: '◉' },
-    { type: 'square', symbol: '▀' },
     { type: 'sawtooth', symbol: '∿' },
-    { type: 'triangle', symbol: '▲' },
+    { type: 'square', symbol: '◻' },
+    { type: 'sine', symbol: 'w' },
+    { type: 'triangle', symbol: '▵' },
   ];
 
   waveforms.forEach(({ type, symbol }) => {
@@ -60,8 +77,8 @@ function createOscillatorPanel(id) {
   freqLabel.textContent = 'Freq: 440Hz';
   const freqSlider = document.createElement('input');
   freqSlider.type = 'range';
-  freqSlider.min = 100;
-  freqSlider.max = 1000;
+  freqSlider.min = 20;
+  freqSlider.max = 20000;
   freqSlider.value = 440;
   freqSlider.oninput = () => {
     freqLabel.textContent = 'Freq: ' + freqSlider.value + 'Hz';
@@ -81,24 +98,12 @@ function createOscillatorPanel(id) {
     if (gainNode) gainNode.gain.value = gainSlider.value;
   };
 
-  const focusButton = document.createElement('button');
-  focusButton.textContent = '⧉';
-  focusButton.title = 'Focus';
-  focusButton.onclick = () => {
-    isFocused = !isFocused;
-    document.querySelectorAll('.oscillator-panel').forEach(p => p.classList.remove('focused'));
-    if (isFocused) {
-      panel.classList.add('focused');
-    }
-  };
-
-  panel.appendChild(onOffButton);
+  panel.appendChild(topRow);
   panel.appendChild(waveformContainer);
   panel.appendChild(freqLabel);
   panel.appendChild(freqSlider);
   panel.appendChild(gainLabel);
   panel.appendChild(gainSlider);
-  panel.appendChild(focusButton);
 
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
