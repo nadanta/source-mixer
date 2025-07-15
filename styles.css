@@ -10,17 +10,9 @@ body {
   flex-direction: column;
 }
 
-#main-panel {
-  background: linear-gradient(135deg, #d0d0d0, #7f7f7f);
-  padding: 20px;
-  border-radius: 16px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.6);
-}
-
 #osc-container {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   grid-gap: 20px;
   padding: 20px;
   max-width: 1000px;
@@ -46,7 +38,7 @@ body {
   font-weight: bold;
   margin-bottom: 10px;
   color: #ccc;
-@@ -43,65 +50,71 @@ body {
+  text-shadow: 1px 1px #000;
 }
 
 button {
@@ -72,7 +64,6 @@ button.wave-active {
 
 .freq-group {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: space-between;
 }
@@ -99,7 +90,6 @@ input[type=range]::-webkit-slider-thumb {
 .freq-input {
   width: 60px;
   margin-left: 8px;
-  margin-top: 6px;
   text-align: center;
 }
 
@@ -110,14 +100,7 @@ input[type=range]::-webkit-slider-thumb {
 }
 
 @media (max-width: 768px) {
-@media (max-width: 768px) and (orientation: portrait) {
   #osc-container {
     grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 768px) and (orientation: landscape) {
-  #osc-container {
-    grid-template-columns: repeat(2, 1fr);
   }
 }
