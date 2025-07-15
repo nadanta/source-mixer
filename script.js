@@ -1,146 +1,36 @@
-const oscConfigs = [
-  { label: "Full", minFreq: 20, maxFreq: 20000 },
-  { label: "Low", minFreq: 20, maxFreq: 200 },
-  { label: "Low-Mid", minFreq: 100, maxFreq: 10000 },
-  { label: "Mid-High", minFreq: 500, maxFreq: 15000 }
-];
 
-const symbols = ["∿", "◻", "w", "▵"];
-const types = ["sine", "square", "sawtooth", "triangle"];
+document.querySelectorAll('.osc-panel').forEach((panel, i) => {
+  panel.innerHTML = `
+    <h3>Oscillator ${i + 1}</h3>
+    <button class="power">Power</button>
+    <div>
+      <label>Freq:</label>
+      <input type="range" min="20" max="20000" value="440" class="freq">
+      <input type="number" value="440" class="freq-input">
+    </div>
+    <div>
+      <label>Gain:</label>
+      <input type="range" min="0" max="1" step="0.01" value="0.2" class="gain">
+    </div>
+    <div>
+      <button class="focus">Focus</button>
+    </div>
+  `;
 
-const container = document.getElementById("osc-container");
+  const freqSlider = panel.querySelector(".freq");
+  const freqInput = panel.querySelector(".freq-input");
 
-oscConfigs.forEach((cfg, i) => {
-  const oscPanel = document.createElement("div");
-  oscPanel.className = "oscillator";
-
-  const ctx = new AudioContext();
-  let osc = null;
-  let gainNode = ctx.createGain();
-  gainNode.connect(ctx.destination);
-  gainNode.gain.value = 0.5;
-  let currentType = "sine";
-
-  const controls = document.createElement("div");
-  controls.className = "controls";
-
-  const powerBtn = document.createElement("button");
-  powerBtn.textContent = "Power";
-  let isOn = false;
-
-  const focusBtn = document.createElement("button");
-  focusBtn.textContent = "Focus";
-
-  powerBtn.onclick = () => {
-    isOn = !isOn;
-    powerBtn.classList.toggle("active", isOn);
-    if (isOn) {
-      osc = ctx.createOscillator();
-      osc.type = currentType;
-      osc.frequency.setValueAtTime(freqSlider.value, ctx.currentTime);
-      osc.connect(gainNode);
-      osc.start();
-      activateWaveform(0); // default to sine
-    } else if (osc) {
-      osc.stop();
-      osc.disconnect();
-    }
-  };
-
-  focusBtn.onclick = () => {
-    document.querySelectorAll(".oscillator").forEach(p => {
-      p.style.display = (p === oscPanel) ? "block" : "none";
-      p.style.transform = (p === oscPanel) ? "scale(1.3)" : "scale(1)";
-    });
-    focusBtn.classList.toggle("focused");
-    if (!focusBtn.classList.contains("focused")) {
-      document.querySelectorAll(".oscillator").forEach(p => {
-        p.style.display = "block";
-        p.style.transform = "scale(1)";
-      });
-    }
-  };
-
-  controls.appendChild(powerBtn);
-  controls.appendChild(focusBtn);
-
-  const label = document.createElement("div");
-  label.className = "label";
-  label.textContent = cfg.label;
-
-  const waveBtns = document.createElement("div");
-  waveBtns.className = "waveform-btns";
-  const waveformButtons = [];
-
-  const activateWaveform = (index) => {
-    waveformButtons.forEach((btn, i) => {
-      btn.classList.toggle("wave-active", i === index);
-    });
-    currentType = types[index];
-    if (osc) osc.type = currentType;
-  };
-
-  symbols.forEach((sym, index) => {
-    const btn = document.createElement("button");
-    btn.textContent = sym;
-    btn.onclick = () => activateWaveform(index);
-    waveformButtons.push(btn);
-    waveBtns.appendChild(btn);
+  freqSlider.addEventListener("input", () => {
+    freqInput.value = freqSlider.value;
   });
 
-  const freqLabel = document.createElement("label");
-  freqLabel.textContent = "Freq:";
-  const freqSlider = document.createElement("input");
-  freqSlider.type = "range";
-  freqSlider.min = cfg.minFreq;
-  freqSlider.max = cfg.maxFreq;
-  freqSlider.value = 440;
-
-  const freqInput = document.createElement("input");
-  freqInput.type = "number";
-  freqInput.value = 440;
-  freqInput.className = "freq-input";
-
-  freqSlider.oninput = () => {
-    freqInput.value = freqSlider.value;
-    if (osc) osc.frequency.setValueAtTime(freqSlider.value, ctx.currentTime);
-  };
-
-  freqInput.onkeydown = (e) => {
+  freqInput.addEventListener("keypress", (e) => {
     if (e.key === "Enter") {
-      let val = parseFloat(freqInput.value);
-      if (!isNaN(val)) {
-        val = Math.max(cfg.minFreq, Math.min(cfg.maxFreq, val));
-        freqSlider.value = val;
-        if (osc) osc.frequency.setValueAtTime(val, ctx.currentTime);
-      }
+      freqSlider.value = freqInput.value;
     }
-  };
+  });
 
-  const freqGroup = document.createElement("div");
-  freqGroup.className = "freq-group";
-  freqGroup.appendChild(freqLabel);
-  freqGroup.appendChild(freqSlider);
-  freqGroup.appendChild(freqInput);
-
-  const gainLabel = document.createElement("label");
-  gainLabel.textContent = "Gain:";
-  const gainSlider = document.createElement("input");
-  gainSlider.type = "range";
-  gainSlider.min = 0;
-  gainSlider.max = 1;
-  gainSlider.step = 0.01;
-  gainSlider.value = 0.5;
-
-  gainSlider.oninput = () => {
-    gainNode.gain.setValueAtTime(gainSlider.value, ctx.currentTime);
-  };
-
-  oscPanel.appendChild(controls);
-  oscPanel.appendChild(label);
-  oscPanel.appendChild(waveBtns);
-  oscPanel.appendChild(freqGroup);
-  oscPanel.appendChild(gainLabel);
-  oscPanel.appendChild(gainSlider);
-  container.appendChild(oscPanel);
+  panel.querySelector(".focus").addEventListener("click", () => {
+    panel.classList.toggle("focused");
+  });
 });
