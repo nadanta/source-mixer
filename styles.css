@@ -1,133 +1,123 @@
-diff --git a/styles.css b/styles.css
-index 201ab341463e06820e4fb1332f643fb68f46ceeb..e5f2e410c1bc739247add489131789f3e01ccc5d 100644
---- a/styles.css
-+++ b/styles.css
-@@ -1,41 +1,48 @@
- 
- body {
-   margin: 0;
-   font-family: monospace;
-   background: radial-gradient(#111, #000);
-   color: white;
-   display: flex;
-   justify-content: center;
-   align-items: center;
-   min-height: 100vh;
-   flex-direction: column;
- }
- 
-+#main-panel {
-+  background: linear-gradient(135deg, #d0d0d0, #7f7f7f);
-+  padding: 20px;
-+  border-radius: 16px;
-+  box-shadow: 0 6px 18px rgba(0,0,0,0.6);
-+}
-+
- #osc-container {
-   display: grid;
--  grid-template-columns: repeat(2, 1fr);
-+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-   grid-gap: 20px;
-   padding: 20px;
-   max-width: 1000px;
- }
- 
- .oscillator {
-   background: linear-gradient(to bottom, #555, #333);
-   border-radius: 12px;
-   padding: 16px;
-   box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-   position: relative;
-   min-width: 300px;
- }
- 
- .controls {
-   display: flex;
-   justify-content: space-between;
-   margin-bottom: 10px;
- }
- 
- .label {
-   text-align: center;
-   font-weight: bold;
-   margin-bottom: 10px;
-   color: #ccc;
-diff --git a/styles.css b/styles.css
-index 201ab341463e06820e4fb1332f643fb68f46ceeb..e5f2e410c1bc739247add489131789f3e01ccc5d 100644
---- a/styles.css
-+++ b/styles.css
+body {
+  margin: 0;
+  font-family: monospace;
+  background: radial-gradient(#111, #000);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+#main-panel {
+  background: linear-gradient(135deg, #d0d0d0, #7f7f7f);
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+}
+
+#osc-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-gap: 20px;
+  padding: 20px;
+  max-width: 1000px;
+}
+
+.oscillator {
+  background: linear-gradient(to bottom, #555, #333);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  position: relative;
+  min-width: 300px;
+}
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.label {
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #ccc;
 @@ -43,65 +50,71 @@ body {
- }
- 
- button {
-   background: #222;
-   border: 1px solid #555;
-   border-radius: 6px;
-   padding: 4px 10px;
-   cursor: pointer;
-   color: white;
- }
- 
- button.active {
-   background: #2ecc71; /* green for power */
- }
- 
- button.focused {
-   background: #3498db; /* blue for focus */
- }
- 
- button.wave-active {
-   background: #c63ccf; /* pinky purple for waveform */
- }
- 
- .freq-group {
-   display: flex;
-+  flex-direction: column;
-   align-items: center;
--  justify-content: space-between;
- }
- 
- input[type=range] {
-   width: 100%;
-   margin: 6px 0;
-   appearance: none;
-   background: #333;
-   height: 6px;
-   border-radius: 4px;
-   outline: none;
- }
- 
- input[type=range]::-webkit-slider-thumb {
-   appearance: none;
-   width: 16px;
-   height: 16px;
-   background: white;
-   border-radius: 50%;
-   border: 1px solid #000;
- }
- 
- .freq-input {
-   width: 60px;
--  margin-left: 8px;
-+  margin-top: 6px;
-   text-align: center;
- }
- 
- .waveform-btns {
-   display: flex;
-   justify-content: space-between;
-   margin-bottom: 8px;
- }
- 
--@media (max-width: 768px) {
-+@media (max-width: 768px) and (orientation: portrait) {
-   #osc-container {
-     grid-template-columns: 1fr;
-   }
- }
-+
-+@media (max-width: 768px) and (orientation: landscape) {
-+  #osc-container {
-+    grid-template-columns: repeat(2, 1fr);
-+  }
-+}
+}
+
+button {
+  background: #222;
+  border: 1px solid #555;
+  border-radius: 6px;
+  padding: 4px 10px;
+  cursor: pointer;
+  color: white;
+}
+
+button.active {
+  background: #2ecc71; /* green for power */
+}
+
+button.focused {
+  background: #3498db; /* blue for focus */
+}
+
+button.wave-active {
+  background: #c63ccf; /* pinky purple for waveform */
+}
+
+.freq-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+input[type=range] {
+  width: 100%;
+  margin: 6px 0;
+  appearance: none;
+  background: #333;
+  height: 6px;
+  border-radius: 4px;
+  outline: none;
+}
+
+input[type=range]::-webkit-slider-thumb {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: white;
+  border-radius: 50%;
+  border: 1px solid #000;
+}
+
+.freq-input {
+  width: 60px;
+  margin-left: 8px;
+  margin-top: 6px;
+  text-align: center;
+}
+
+.waveform-btns {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+@media (max-width: 768px) {
+@media (max-width: 768px) and (orientation: portrait) {
+  #osc-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) and (orientation: landscape) {
+  #osc-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
