@@ -48,6 +48,7 @@ body {
   text-align: center;
   box-shadow: 0 3px 8px #000a;
   color: #fff;
+  text-align: center;
   position: relative;
   display: flex;
   flex-direction: column;
