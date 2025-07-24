@@ -1,34 +1,33 @@
-const context = new (window.AudioContext || window.webkitAudioContext)();
-function createOscillatorPanel(cfg) {
-  const { id, min, max, label } = cfg;
-  const panel = document.getElementById(id);
-  let oscillator = null;
-  let gainNode = null;
-  let isOn = false;
-  let isFocused = false;
-  let currentWaveBtn = null;
+/* global React, ReactDOM */
+// React-based sound mixer with 4 oscillators and a global meter
+const { useState, useEffect, useRef } = React;
 
-  const topRow = document.createElement("div");
-  topRow.className = "panel-top";
+function OscillatorPanel({ label, min, max, audioCtx, masterGain }) {
+  const [frequency, setFrequency] = useState((min + max) / 2);
+  const [gain, setGain] = useState(0.5);
+  const [wave, setWave] = useState('sine');
+  const [on, setOn] = useState(false);
+  const [focused, setFocused] = useState(false);
+  const oscRef = useRef(null);
+  const gainRef = useRef(null);
 
-  const powerBtn = document.createElement("button");
-  powerBtn.textContent = "●";
-  powerBtn.className = "power-off";
-  powerBtn.title = "Power";
-
-  const oscLabel = document.createElement("span");
-  oscLabel.className = "osc-label";
-  oscLabel.textContent = label;
-
-  const focusBtn = document.createElement("button");
-  focusBtn.textContent = "⧉";
-  focusBtn.title = "Focus";
-
-  topRow.appendChild(powerBtn);
-  topRow.appendChild(oscLabel);
-  topRow.appendChild(focusBtn);
-
-   oscRef.current.disconnect();
+  const togglePower = () => {
+    const ctx = audioCtx;
+    if (ctx.state === 'suspended') ctx.resume();
+    if (!on) {
+      const osc = ctx.createOscillator();
+      const g = ctx.createGain();
+      osc.type = wave;
+      osc.frequency.value = frequency;
+      g.gain.value = gain;
+      osc.connect(g).connect(masterGain);
+      osc.start();
+      oscRef.current = osc;
+      gainRef.current = g;
+      setOn(true);
+    } else {
+      oscRef.current.stop();
+      oscRef.current.disconnect();
       gainRef.current.disconnect();
       oscRef.current = null;
       gainRef.current = null;
@@ -62,7 +61,7 @@ function createOscillatorPanel(cfg) {
   }, []);
 
   return (
-    <div className={`oscillator-panel${focused ? ' focused' : ''}`}> 
+    <div className={`oscillator-panel${focused ? ' focused' : ''}`}>
       <div className="panel-top">
         <button className={on ? 'power-on' : 'power-off'} onClick={togglePower}>●</button>
         <span className="osc-label">{label}</span>
@@ -86,7 +85,70 @@ function createOscillatorPanel(cfg) {
         value={frequency}
         onChange={e => setFrequency(Number(e.target.value))}
       />
-@@ -143,26 +151,28 @@ function App() {
+      <label>Gain: {gain.toFixed(2)}</label>
+      <input
+        type="range"
+        min={0}
+        max={1}
+        step={0.01}
+        value={gain}
+        onChange={e => setGain(Number(e.target.value))}
+      />
+    </div>
+  );
+}
+
+function SoundMeter({ analyser }) {
+  const [level, setLevel] = useState(0);
+  useEffect(() => {
+    const data = new Uint8Array(analyser.fftSize);
+    let frame;
+    const update = () => {
+      analyser.getByteTimeDomainData(data);
+      let sum = 0;
+      for (let i = 0; i < data.length; i++) {
+        const v = (data[i] - 128) / 128;
+        sum += v * v;
+      }
+      const rms = Math.sqrt(sum / data.length);
+      setLevel(rms);
+      frame = requestAnimationFrame(update);
+    };
+    update();
+    return () => cancelAnimationFrame(frame);
+  }, [analyser]);
+
+  return (
+    <div className="sound-meter">
+      <div className="sound-level" style={{ height: `${Math.min(level, 1) * 100}%` }} />
+    </div>
+  );
+}
+
+function App() {
+  const audioCtxRef = useRef(null);
+  const masterGainRef = useRef(null);
+  const analyserRef = useRef(null);
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const master = ctx.createGain();
+    const analyser = ctx.createAnalyser();
+    analyser.fftSize = 256;
+    master.connect(analyser);
+    analyser.connect(ctx.destination);
+    audioCtxRef.current = ctx;
+    masterGainRef.current = master;
+    analyserRef.current = analyser;
+
+    const resume = () => {
+      if (ctx.state === 'suspended') ctx.resume();
+      setReady(true);
+    };
+    window.addEventListener('touchstart', resume, { once: true });
+    window.addEventListener('click', resume, { once: true });
+  }, []);
 
   const configs = [
     { label: 'Full', min: 20, max: 20000 },
@@ -112,7 +174,7 @@ function createOscillatorPanel(cfg) {
   );
 }
 
-ReactDOM.render(<App />, document.getElementById('root'));
 const rootElement = document.getElementById('root');
 const root = ReactDOM.createRoot(rootElement);
 root.render(<App />);
+
