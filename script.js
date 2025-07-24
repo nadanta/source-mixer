@@ -70,6 +70,7 @@ function OscillatorPanel({ label, min, max, audioCtx, masterGain }) {
 
   const togglePower = () => {
     const ctx = audioCtx;
+    if (!ctx) return;
     if (ctx.state === 'suspended') ctx.resume();
     if (!on) {
       const osc = ctx.createOscillator();
@@ -95,57 +96,7 @@ function OscillatorPanel({ label, min, max, audioCtx, masterGain }) {
   useEffect(() => {
     if (oscRef.current) oscRef.current.type = wave;
   }, [wave]);
-  useEffect(() => {
-    if (oscRef.current) oscRef.current.frequency.value = frequency;
-  }, [frequency]);
-  useEffect(() => {
-    if (gainRef.current) gainRef.current.gain.value = gain;
-  }, [gain]);
-  useEffect(() => () => {
-    if (oscRef.current) {
-      oscRef.current.stop();
-      oscRef.current.disconnect();
-    }
-    if (gainRef.current) gainRef.current.disconnect();
-  }, []);
-
-  const waveSymbols = {
-    sine: '∿',
-    square: '◻',
-    sawtooth: 'w',
-    triangle: '▵',
-  };
-
-  useEffect(() => {
-    const handleKey = (e) => {
-      if (e.key === 'Escape') setFocused(false);
-    };
-    window.addEventListener('keydown', handleKey);
-    return () => window.removeEventListener('keydown', handleKey);
-  }, []);
-
-  return (
-    <div className={`oscillator-panel${focused ? ' focused' : ''}`}>
-      <div className="panel-top">
-        <button className={on ? 'power-on' : 'power-off'} onClick={togglePower}>●</button>
-        <span className="osc-label">{label}</span>
-        <button onClick={() => setFocused(!focused)} title="Focus">⧉</button>
-      </div>
-      <div className="waveform-buttons">
-        {Object.keys(waveSymbols).map(w => (
-          <button
-            key={w}
-            className={wave === w ? 'wave-active' : ''}
-            onClick={() => setWave(w)}>
-            {waveSymbols[w]}
-          </button>
-        ))}
-      </div>
-      <label>Frequency <span className="freq-display">{frequency}Hz</span></label>
-      <input
-        type="range"
-        min={min}
-        max={max}
+@@ -149,50 +150,51 @@ function OscillatorPanel({ label, min, max, audioCtx, masterGain }) {
         value={frequency}
         onChange={e => setFrequency(Number(e.target.value))}
       />
@@ -171,6 +122,7 @@ function NoisePanel({ type, label, audioCtx, masterGain }) {
 
   const togglePower = () => {
     const ctx = audioCtx;
+    if (!ctx) return;
     if (ctx.state === 'suspended') ctx.resume();
     if (!on) {
       const { src, node } = createNoiseSource(ctx, type);
@@ -196,43 +148,7 @@ function NoisePanel({ type, label, audioCtx, masterGain }) {
 
   useEffect(() => {
     if (gainRef.current) gainRef.current.gain.value = gain;
-  }, [gain]);
-
-  useEffect(() => () => {
-    if (srcRef.current) {
-      srcRef.current.stop();
-      srcRef.current.disconnect();
-    }
-    if (nodeRef.current) nodeRef.current.disconnect();
-    if (gainRef.current) gainRef.current.disconnect();
-  }, []);
-
-  return (
-    <div className="oscillator-panel">
-      <div className="panel-top">
-        <button className={on ? 'power-on' : 'power-off'} onClick={togglePower}>●</button>
-        <span className="osc-label">{label}</span>
-      </div>
-      <label>Gain: {gain.toFixed(2)}</label>
-      <input
-        type="range"
-        min={0}
-        max={1}
-        step={0.01}
-        value={gain}
-        onChange={e => setGain(Number(e.target.value))}
-      />
-    </div>
-  );
-}
-
-function SoundMeter({ analyser }) {
-  const [level, setLevel] = useState(0);
-  useEffect(() => {
-    const data = new Uint8Array(analyser.fftSize);
-    let frame;
-    const update = () => {
-      analyser.getByteTimeDomainData(data);
+@@ -236,143 +238,145 @@ function SoundMeter({ analyser }) {
       let sum = 0;
       for (let i = 0; i < data.length; i++) {
         const v = (data[i] - 128) / 128;
@@ -258,6 +174,7 @@ function FourOscPlate({ audioCtx, ready }) {
   const analyserRef = useRef(null);
 
   useEffect(() => {
+    if (!audioCtx) return;
     const master = audioCtx.createGain();
     const analyser = audioCtx.createAnalyser();
     analyser.fftSize = 256;
@@ -299,6 +216,7 @@ function NoisePlate({ audioCtx, ready }) {
   const analyserRef = useRef(null);
 
   useEffect(() => {
+    if (!audioCtx) return;
     const master = audioCtx.createGain();
     const analyser = audioCtx.createAnalyser();
     analyser.fftSize = 256;
@@ -346,12 +264,14 @@ function Menu({ plate, setPlate }) {
 
 function App() {
   const audioCtxRef = useRef(null);
+  const [audioCtx, setAudioCtx] = useState(null);
   const [ready, setReady] = useState(false);
   const [plate, setPlate] = useState('osc');
 
   useEffect(() => {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
     audioCtxRef.current = ctx;
+    setAudioCtx(ctx);
     const resume = () => {
       if (ctx.state === 'suspended') ctx.resume();
       setReady(true);
@@ -365,9 +285,13 @@ function App() {
       <Menu plate={plate} setPlate={setPlate} />
       {plate === 'osc' && (
         <FourOscPlate audioCtx={audioCtxRef.current} ready={ready} />
+      {audioCtx && plate === 'osc' && (
+        <FourOscPlate audioCtx={audioCtx} ready={ready} />
       )}
       {plate === 'noise' && (
         <NoisePlate audioCtx={audioCtxRef.current} ready={ready} />
+      {audioCtx && plate === 'noise' && (
+        <NoisePlate audioCtx={audioCtx} ready={ready} />
       )}
     </div>
   );
