@@ -1,6 +1,51 @@
 /* global React, ReactDOM */
 // React-based sound mixer with 4 oscillators and a global meter
+// React-based sound mixer with 4 oscillators, noise plate, and a global meter
 const { useState, useEffect, useRef } = React;
+
+function createNoiseBuffer(ctx, type) {
+  const size = ctx.sampleRate;
+  const buffer = ctx.createBuffer(1, size, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+  let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+  let lastOut = 0, lastWhite = 0;
+  for (let i = 0; i < size; i++) {
+    const white = Math.random() * 2 - 1;
+    switch (type) {
+      case 'white':
+        data[i] = white * 0.5;
+        break;
+      case 'pink':
+        b0 = 0.99886 * b0 + white * 0.0555179;
+        b1 = 0.99332 * b1 + white * 0.0750759;
+        b2 = 0.96900 * b2 + white * 0.1538520;
+        b3 = 0.86650 * b3 + white * 0.3104856;
+        b4 = 0.55000 * b4 + white * 0.5329522;
+        b5 = -0.7616 * b5 - white * 0.0168980;
+        data[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.11;
+        b6 = white * 0.115926;
+        break;
+      case 'brown':
+        lastOut = (lastOut + 0.02 * white) / 1.02;
+        data[i] = lastOut * 3.5;
+        break;
+      case 'violet':
+        data[i] = (white - lastWhite) * 0.5;
+        lastWhite = white;
+        break;
+      default:
+        data[i] = white;
+    }
+  }
+  return buffer;
+}
+
+function createNoiseSource(ctx, type) {
+  const src = ctx.createBufferSource();
+  src.buffer = createNoiseBuffer(ctx, type);
+  src.loop = true;
+  return src;
+}
 
 function OscillatorPanel({ label, min, max, audioCtx, masterGain }) {
   const [frequency, setFrequency] = useState((min + max) / 2);
@@ -44,6 +89,13 @@ function OscillatorPanel({ label, min, max, audioCtx, masterGain }) {
   useEffect(() => {
     if (gainRef.current) gainRef.current.gain.value = gain;
   }, [gain]);
+  useEffect(() => () => {
+    if (oscRef.current) {
+      oscRef.current.stop();
+      oscRef.current.disconnect();
+    }
+    if (gainRef.current) gainRef.current.disconnect();
+  }, []);
 
   const waveSymbols = {
     sine: '∿',
@@ -61,6 +113,7 @@ function OscillatorPanel({ label, min, max, audioCtx, masterGain }) {
   }, []);
 
   return (
+    <div className={`oscillator-panel${focused ? ' focused' : ''}`}> 
     <div className={`oscillator-panel${focused ? ' focused' : ''}`}>
       <div className="panel-top">
         <button className={on ? 'power-on' : 'power-off'} onClick={togglePower}>●</button>
@@ -85,6 +138,65 @@ function OscillatorPanel({ label, min, max, audioCtx, masterGain }) {
         value={frequency}
         onChange={e => setFrequency(Number(e.target.value))}
       />
+      <label>Gain: {gain.toFixed(2)}</label>
+      <input
+        type="range"
+        min={0}
+        max={1}
+        step={0.01}
+        value={gain}
+        onChange={e => setGain(Number(e.target.value))}
+      />
+    </div>
+  );
+}
+
+function NoisePanel({ type, label, audioCtx, masterGain }) {
+  const [gain, setGain] = useState(0.5);
+  const [on, setOn] = useState(false);
+  const srcRef = useRef(null);
+  const gainRef = useRef(null);
+
+  const togglePower = () => {
+    const ctx = audioCtx;
+    if (ctx.state === 'suspended') ctx.resume();
+    if (!on) {
+      const src = createNoiseSource(ctx, type);
+      const g = ctx.createGain();
+      g.gain.value = gain;
+      src.connect(g).connect(masterGain);
+      src.start();
+      srcRef.current = src;
+      gainRef.current = g;
+      setOn(true);
+    } else {
+      srcRef.current.stop();
+      srcRef.current.disconnect();
+      gainRef.current.disconnect();
+      srcRef.current = null;
+      gainRef.current = null;
+      setOn(false);
+    }
+  };
+
+  useEffect(() => {
+    if (gainRef.current) gainRef.current.gain.value = gain;
+  }, [gain]);
+
+  useEffect(() => () => {
+    if (srcRef.current) {
+      srcRef.current.stop();
+      srcRef.current.disconnect();
+    }
+    if (gainRef.current) gainRef.current.disconnect();
+  }, []);
+
+  return (
+    <div className="oscillator-panel">
+      <div className="panel-top">
+        <button className={on ? 'power-on' : 'power-off'} onClick={togglePower}>●</button>
+        <span className="osc-label">{label}</span>
+      </div>
       <label>Gain: {gain.toFixed(2)}</label>
       <input
         type="range"
@@ -127,6 +239,7 @@ function SoundMeter({ analyser }) {
 
 function App() {
   const audioCtxRef = useRef(null);
+function FourOscPlate({ audioCtx, ready }) {
   const masterGainRef = useRef(null);
   const analyserRef = useRef(null);
   const [ready, setReady] = useState(false);
@@ -135,20 +248,27 @@ function App() {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
     const master = ctx.createGain();
     const analyser = ctx.createAnalyser();
+    const master = audioCtx.createGain();
+    const analyser = audioCtx.createAnalyser();
     analyser.fftSize = 256;
     master.connect(analyser);
     analyser.connect(ctx.destination);
     audioCtxRef.current = ctx;
+    master.connect(analyser).connect(audioCtx.destination);
     masterGainRef.current = master;
     analyserRef.current = analyser;
 
     const resume = () => {
       if (ctx.state === 'suspended') ctx.resume();
       setReady(true);
+    return () => {
+      master.disconnect();
+      analyser.disconnect();
     };
     window.addEventListener('touchstart', resume, { once: true });
     window.addEventListener('click', resume, { once: true });
   }, []);
+  }, [audioCtx]);
 
   const configs = [
     { label: 'Full', min: 20, max: 20000 },
@@ -165,6 +285,7 @@ function App() {
             key={i}
             {...cfg}
             audioCtx={audioCtxRef.current}
+            audioCtx={audioCtx}
             masterGain={masterGainRef.current}
           />
         ))}
@@ -174,7 +295,87 @@ function App() {
   );
 }
 
+function NoisePlate({ audioCtx, ready }) {
+  const masterGainRef = useRef(null);
+  const analyserRef = useRef(null);
+
+  useEffect(() => {
+    const master = audioCtx.createGain();
+    const analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 256;
+    master.connect(analyser).connect(audioCtx.destination);
+    masterGainRef.current = master;
+    analyserRef.current = analyser;
+    return () => {
+      master.disconnect();
+      analyser.disconnect();
+    };
+  }, [audioCtx]);
+
+  const configs = [
+    { type: 'white', label: 'White Noise' },
+    { type: 'pink', label: 'Pink Noise' },
+    { type: 'brown', label: 'Brown Noise' },
+    { type: 'violet', label: 'Violet Noise' },
+  ];
+
+  return (
+    <div id="plate">
+      <div id="main-panel">
+        {configs.map((cfg, i) => (
+          <NoisePanel
+            key={i}
+            {...cfg}
+            audioCtx={audioCtx}
+            masterGain={masterGainRef.current}
+          />
+        ))}
+      </div>
+      {ready && <SoundMeter analyser={analyserRef.current} />}
+    </div>
+  );
+}
+
+function Menu({ plate, setPlate }) {
+  return (
+    <div id="menu">
+      <button onClick={() => setPlate('osc')} className={plate === 'osc' ? 'active' : ''}>4osc</button>
+      <button onClick={() => setPlate('noise')} className={plate === 'noise' ? 'active' : ''}>Noise</button>
+    </div>
+  );
+}
+
+function App() {
+  const audioCtxRef = useRef(null);
+  const [ready, setReady] = useState(false);
+  const [plate, setPlate] = useState('osc');
+
+  useEffect(() => {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    audioCtxRef.current = ctx;
+    const resume = () => {
+      if (ctx.state === 'suspended') ctx.resume();
+      setReady(true);
+    };
+    window.addEventListener('touchstart', resume, { once: true });
+    window.addEventListener('click', resume, { once: true });
+  }, []);
+
+  return (
+    <div id="app">
+      <Menu plate={plate} setPlate={setPlate} />
+      {plate === 'osc' && (
+        <FourOscPlate audioCtx={audioCtxRef.current} ready={ready} />
+      )}
+      {plate === 'noise' && (
+        <NoisePlate audioCtx={audioCtxRef.current} ready={ready} />
+      )}
+    </div>
+  );
+}
+
 const rootElement = document.getElementById('root');
 const root = ReactDOM.createRoot(rootElement);
 root.render(<App />);
+
 
