@@ -5,7 +5,6 @@ import NavMenu from './NavMenu';
 
 export default function PlateContainer() {
   const [activePlate, setActivePlate] = useState('4osc');
-
   return (
     <div className="plate-wrapper">
       <NavMenu active={activePlate} setActive={setActivePlate} />

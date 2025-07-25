@@ -1,7 +1,6 @@
 {
   "name": "source-fusion",
   "version": "1.0.0",
-  "description": "Source Fusion Noise & Oscillator Plates",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
