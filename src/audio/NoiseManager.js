@@ -5,19 +5,18 @@ class NoiseManager {
   constructor() {
     this.sources = {};
     this.gains = {};
-    this.buffers = {};
+
+    // Set up analyser
     this.analyser = ctx.createAnalyser();
     this.analyser.fftSize = 256;
     this.analyserData = new Uint8Array(this.analyser.frequencyBinCount);
-
     masterGain.connect(this.analyser);
 
-    this.resumeContextOnInteraction();
-  }
-
-  resumeContextOnInteraction() {
+    // Unlock AudioContext on user interaction
     const resume = () => {
-      if (ctx.state === 'suspended') ctx.resume();
+      if (ctx.state === 'suspended') {
+        ctx.resume();
+      }
       document.removeEventListener('click', resume);
       document.removeEventListener('touchstart', resume);
     };
@@ -25,62 +24,54 @@ class NoiseManager {
     document.addEventListener('touchstart', resume);
   }
 
-  createNoiseBuffer(type) {
+  createBuffer(type) {
     const bufferSize = 2 * ctx.sampleRate;
     const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
     const data = buffer.getChannelData(0);
 
-    let lastOut = 0;
-    let b = new Array(7).fill(0);
-
     for (let i = 0; i < bufferSize; i++) {
       const white = Math.random() * 2 - 1;
-      switch (type) {
-        case 'white':
-          data[i] = white;
-          break;
-        case 'pink':
-          b[0] = 0.99886 * b[0] + white * 0.0555179;
-          b[1] = 0.99332 * b[1] + white * 0.0750759;
-          b[2] = 0.96900 * b[2] + white * 0.1538520;
-          b[3] = 0.86650 * b[3] + white * 0.3104856;
-          b[4] = 0.55000 * b[4] + white * 0.5329522;
-          b[5] = -0.7616 * b[5] - white * 0.0168980;
-          b[6] = white * 0.115926;
-          data[i] = b.slice(0, 6).reduce((a, c) => a + c, 0) + b[6];
-          data[i] *= 0.11;
-          break;
-        case 'brown':
-          data[i] = (lastOut + 0.02 * white) / 1.02;
-          lastOut = data[i];
-          data[i] *= 3.5;
-          break;
-        case 'violet':
-          data[i] = white * i / bufferSize;
-          break;
+
+      if (type === 'white') {
+        data[i] = white;
+      } else if (type === 'pink') {
+        let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+        b0 = 0.99886 * b0 + white * 0.0555179;
+        b1 = 0.99332 * b1 + white * 0.0750759;
+        b2 = 0.96900 * b2 + white * 0.1538520;
+        b3 = 0.86650 * b3 + white * 0.3104856;
+        b4 = 0.55000 * b4 + white * 0.5329522;
+        b5 = -0.7616 * b5 - white * 0.0168980;
+        data[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
+        b6 = white * 0.115926;
+        data[i] *= 0.11;
+      } else if (type === 'brown') {
+        let lastOut = 0;
+        data[i] = (lastOut + 0.02 * white) / 1.02;
+        lastOut = data[i];
+        data[i] *= 3.5;
+      } else if (type === 'violet') {
+        data[i] = white * (i / bufferSize);
       }
     }
+
     return buffer;
   }
 
   play(type) {
-    if (this.sources[type]) return;
+    this.stop(type);
 
-    if (!this.buffers[type]) {
-      this.buffers[type] = this.createNoiseBuffer(type);
-    }
+    const source = ctx.createBufferSource();
+    source.buffer = this.createBuffer(type);
+    source.loop = true;
 
-    const src = ctx.createBufferSource();
     const gain = ctx.createGain();
-    gain.gain.value = 0.05;
+    gain.gain.value = 0.2;
 
-    src.buffer = this.buffers[type];
-    src.loop = true;
+    source.connect(gain).connect(masterGain);
+    source.start();
 
-    src.connect(gain).connect(masterGain);
-    src.start();
-
-    this.sources[type] = src;
+    this.sources[type] = source;
     this.gains[type] = gain;
   }
 
