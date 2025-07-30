@@ -1,0 +1,37 @@
+/* File: src/index.css */
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  background: #111;
+  color: #fff;
+}
+
+.plate-wrapper {
+  margin-left: 60px;
+  padding: 1rem;
+}
+
+.plate {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.osc-panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.osc-card {
+  background: #222;
+  padding: 1rem;
+  border-radius: 8px;
+  width: 140px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
+}

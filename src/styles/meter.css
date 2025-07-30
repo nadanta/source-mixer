@@ -1,0 +1,16 @@
+/* meter.css */
+.meter-wrapper {
+  width: 10px;
+  height: 80px;
+  background: #111;
+  border: 1px solid #333;
+  margin: 0.5rem auto;
+  display: flex;
+  align-items: flex-end;
+}
+
+.meter-bar {
+  width: 100%;
+  background: lime;
+  transition: height 0.1s linear;
+}

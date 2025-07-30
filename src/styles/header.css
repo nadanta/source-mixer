@@ -1,0 +1,21 @@
+/* File: src/styles/header.css */
+.app-header {
+  text-align: center;
+  padding: 1rem 0;
+  background-color: #111;
+  color: white;
+  border-bottom: 1px solid #333;
+}
+
+.title {
+  margin: 0;
+  font-size: 2rem;
+  letter-spacing: 0.1rem;
+}
+
+.tagline {
+  margin: 0.25rem 0 0;
+  font-style: italic;
+  font-size: 1rem;
+  color: #fff;
+}

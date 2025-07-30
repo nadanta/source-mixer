@@ -1,7 +1,18 @@
+// File: src/main.jsx
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import PlateContainer from '../components/PlateContainer';
-import '../styles/navmenu.css';
+import PlateContainer from './components/PlateContainer';
+import './index.css'; // Ensure this exists and contains global styles
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<PlateContainer />);
+const rootElement = document.getElementById('root');
+
+if (rootElement) {
+  const root = ReactDOM.createRoot(rootElement);
+  root.render(
+    <React.StrictMode>
+      <PlateContainer />
+    </React.StrictMode>
+  );
+} else {
+  console.error('Root element not found.');
+}
